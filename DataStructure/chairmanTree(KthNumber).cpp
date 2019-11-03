@@ -51,3 +51,46 @@ int main()
 4
 2
 ****************************************************************************/
+
+
+//x<k where index x between l and r
+#include<bits/stdc++.h>
+using namespace std;
+#define MAXM 2000005
+#define MAXN 100005
+int n,q,m,s[MAXM],lc[MAXM],rc[MAXM],root[MAXN],a[MAXN],i,j,k;
+void fix(int &R,int &R1,int l,int r,int x)
+{
+    R=++m;
+    s[R]=s[R1]+1;
+    if(l==r)return;
+    int mid=l+r>>1;
+    if(x<=mid){
+        fix(lc[R],lc[R1],l,mid,x);
+        rc[R]=rc[R1];
+    }else{
+        fix(rc[R],rc[R1],mid+1,r,x);
+        lc[R]=lc[R1];
+    }
+}
+int ask(int R,int l,int r,int x)
+{
+    if(!R)return 0;
+    if(l==r)return s[R];
+    int mid=l+r>>1;
+    if(x<=mid)return ask(lc[R],l,mid,x);
+    return s[lc[R]]+ask(rc[R],mid+1,r,x);
+}
+int main()
+{
+    scanf("%d%d",&n,&q);
+    for(i=1;i<=n;i++){
+        scanf("%d",a+i);
+        fix(root[i],root[i-1],1,100000,a[i]);
+    }
+    while(q--){
+        scanf("%d%d%d",&i,&j,&k);
+        printf("%d\n",ask(root[j],1,100000,k)-ask(root[i-1],1,100000,k));
+    }
+    return 0;
+}
